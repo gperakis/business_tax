@@ -49,6 +49,7 @@ def calculate_expenses():
     revma = st.number_input('Ρεύμα', min_value=0)
     nero = st.number_input('Νερό', min_value=0)
     internet = st.number_input('Τηλέφωνα-Internet', min_value=0)
+    special = st.number_input('Ειδική', min_value=0)
     other_expenses = st.number_input('Aναλώσιμα/Λοιπά έξοδα', min_value=0)
 
     total = logistika
@@ -56,6 +57,7 @@ def calculate_expenses():
     total += revma
     total += nero
     total += internet
+    total += special
     total += other_expenses
 
     efka_help = 'Από 01/01/2020 δημιουργούνται επτά (7) ασφαλιστικές ' \
@@ -74,6 +76,7 @@ def calculate_expenses():
 
 
 def compute_tax_on_atomic(amount_to_be_taxed):
+
     st.markdown('### Ανάλυση Φορολογίας Ατομικής Επιχείρησης')
 
     x = amount_to_be_taxed
@@ -92,18 +95,18 @@ def compute_tax_on_atomic(amount_to_be_taxed):
 
     total_tax = sum(tax_values)
 
-    sintelestes = ["{:.0%}".format(i) for i in tax_prc_values]
-    sintelestes.append('Σύνολο')
+    tax_coeff = ["{:.0%}".format(i) for i in tax_prc_values[:len(tax_values)]]
+    tax_coeff.append('Σύνολο')
     tax_values.append(total_tax)
     tax_values = [convert(i) for i in tax_values]
 
-    tax_df = pd.DataFrame({'Συντελεστής': sintelestes,
+    tax_df = pd.DataFrame({'Συντελεστής': tax_coeff,
                            'Ποσό': tax_values})
 
     st.dataframe(tax_df)
 
     st.markdown(f'**Συνολικός Κύριος Φόρος Ατομικής '
-                f'Επιχείρησης: {round(total_tax, 3)}**')
+                f'Επιχείρησης: {convert(total_tax)}**')
 
     net_value = amount_to_be_taxed - total_tax
     return total_tax, net_value
@@ -131,7 +134,7 @@ def compute_tax_for_oe_and_ee(amount_to_be_taxed):
     st.dataframe(data)
 
     st.markdown(f'**Συνολικός Κύριος Φόρος OE-EE '
-                f'Επιχείρησης: {round(total_tax, 3)}**')
+                f'Επιχείρησης: {convert(total_tax)}**')
 
     net_value = amount_to_be_taxed - total_tax
     return total_tax, net_value
